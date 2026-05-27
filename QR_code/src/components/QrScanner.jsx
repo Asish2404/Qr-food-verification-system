@@ -1,6 +1,12 @@
+<<<<<<< Updated upstream
 import { useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import "./Qr.css";
+=======
+import React, { useEffect, useState } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
+import "./QrScanner.css";
+>>>>>>> Stashed changes
 
 const QrScanner = () => {
   const scannerRef = useRef(null);
@@ -118,6 +124,7 @@ const QrScanner = () => {
   };
   return (
     <div className="container">
+<<<<<<< Updated upstream
       <div className="left-panel">
         <p className="header">
           QR Scanner
@@ -215,6 +222,26 @@ const QrScanner = () => {
           </div>
         )}
       </div>
+=======
+      <h1 className="title">QR Scanner</h1>
+
+      <div id="reader"></div>
+
+      {scanResult && (
+        <div className="result-box">
+          <h3>Scanned Result:</h3>
+
+          <a
+            href={scanResult}
+            target="_blank"
+            rel="noreferrer"
+            className="result-link"
+          >
+            {scanResult}
+          </a>
+        </div>
+      )}
+>>>>>>> Stashed changes
     </div>
   );
 };
