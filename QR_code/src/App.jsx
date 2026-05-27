@@ -1,5 +1,5 @@
-import React from 'react'
 import QrScanner from './components/QrScanner'
+
 
 const App = () => {
   return (
@@ -10,3 +10,4 @@ const App = () => {
 }
 
 export default App
+
