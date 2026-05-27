@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 :root{
   color-scheme: dark;
 }
@@ -13,13 +12,13 @@ body{
   font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-=======
 @keyframes scan {
+
   0% {
     top: 0;
   }
+
   100% {
     top: 100%;
   }
 }
->>>>>>> Stashed changes
