@@ -1,25 +1,22 @@
 import { useRef, useState } from "react";
-
 import { Html5Qrcode } from "html5-qrcode";
-
 import "./Qr.css";
 
 const QrScanner = () => {
-
   const scannerRef = useRef(null);
-
-  const [scanResult, setScanResult] = useState("");
-
+  const [scanResult, setScanResult] = useState(null);
+  const [counts, setCounts] = useState({
+    veg: 0,
+    nonveg: 0
+  });
   const [isScanning, setIsScanning] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const delay = (ms) =>
     new Promise((resolve) =>
-      setTimeout(resolve, ms)
-    );
+      setTimeout(resolve, ms));
   const redeemQr = async (decodedText) => {
     try {
-      setScanResult("");
+      setScanResult(null);
       setLoading(true);
       console.log("QR DATA:", decodedText);
       await delay(1500);
@@ -38,10 +35,19 @@ const QrScanner = () => {
       const data = await response.json();
       console.log("BACKEND RESPONSE:", data);
       await delay(1000);
-      setScanResult(data.message);
+      setScanResult(data);
+      if (data.counts) {
+        setCounts({
+          veg: data.counts.veg,
+          nonveg: data.counts.nonveg
+        });
+      }
     } catch (err) {
       console.log(err);
-      setScanResult("Backend Error");
+      setScanResult({
+        success: false,
+        message: "Backend Error"
+      });
     } finally {
       setLoading(false);
     }
@@ -77,6 +83,7 @@ const QrScanner = () => {
       alert("Unable to access camera");
     }
   };
+
   const stopScanner = async () => {
     try {
       if (scannerRef.current) {
@@ -87,6 +94,7 @@ const QrScanner = () => {
       console.log("Scanner Stop Error:", err);
     }
   };
+
   const scanImage = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -111,9 +119,9 @@ const QrScanner = () => {
   return (
     <div className="container">
       <div className="left-panel">
-        <h1 className="header">
+        <p className="header">
           QR Scanner
-        </h1>
+        </p>
         <div id="reader"></div>
         <div className="button-group">
           {!isScanning ? (
@@ -133,9 +141,9 @@ const QrScanner = () => {
           )}
         </div>
         <div className="upload-section">
-          <label className="upload-label">
+          <p className="upload-label">
             Upload QR Image
-          </label>
+          </p>
           <input
             type="file"
             accept="image/*"
@@ -144,9 +152,27 @@ const QrScanner = () => {
         </div>
       </div>
       <div className="right-panel">
-        <h2 className="result-title">
+        <p className="result-title">
           Scan Result
-        </h2>
+        </p>
+        <div className="count-box">
+          <div className="count-card">
+            <p className="count-heading">
+              Veg
+            </p>
+            <p className="count-number">
+              {counts.veg}
+            </p>
+          </div>
+          <div className="count-card">
+            <p className="count-heading">
+              Non-Veg
+            </p>
+            <p className="count-number">
+              {counts.nonveg}
+            </p>
+          </div>
+        </div>
         {loading && (
           <div className="result-box">
             <div className="loader"></div>
@@ -157,16 +183,40 @@ const QrScanner = () => {
         )}
         {scanResult && !loading && (
           <div className="result-box">
-            <h3>
+            <p className="status-title">
               Status
-            </h3>
-            <pre className="result-text">
-              {scanResult}
-            </pre>
+            </p>
+            <div className="result-text">
+              <p>
+                <strong>Message:</strong>
+                {" "}
+                {scanResult.message}
+              </p>
+              {scanResult.qr_data && (
+                <>
+                  <p>
+                    <strong>Coupon ID:</strong>
+                    {" "}
+                    {scanResult.qr_data.coupon_id}
+                  </p>
+                  <p>
+                    <strong>Product ID:</strong>
+                    {" "}
+                    {scanResult.qr_data.pid}
+                  </p>
+                  <p>
+                    <strong>Food Preference:</strong>
+                    {" "}
+                    {scanResult.qr_data.food_preference}
+                  </p>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 };
+
 export default QrScanner;
