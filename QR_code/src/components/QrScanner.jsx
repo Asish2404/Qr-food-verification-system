@@ -109,9 +109,9 @@ const QrScanner = () => {
 
           console.log("SCANNED:", decodedText);
 
-          await redeemQr(decodedText);
-
           await stopScanner();
+
+          await redeemQr(decodedText);
         },
 
         (errorMessage) => {
